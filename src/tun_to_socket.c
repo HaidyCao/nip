@@ -30,6 +30,7 @@ struct time_wait {
 
 static uint16_t ip_identification = 0;
 static LinkList *time_wait_list = NULL;
+static bool write_out_enable = false;
 
 static int64_t gen_socket_key(uint32_t src, uint16_t src_port);
 
@@ -604,12 +605,13 @@ int tts_tcp_input(TunToSocket *tts, IP_PROTO *ip, TCP_PROTO *tcp) {
         }
         return 0;
     } else if (tcp->header->ACK == 1) {
+        write_out_enable = true;
         int64_t key = gen_socket_key(ip->header->src, tcp->header->src_port);
         Socket *socket = CSparseArray_get(tts->socket_array, key);
 
         if (socket) {
             if (socket->close) {
-                NIP_LOGE("tcp closed");
+                NIP_LOGW("tcp closed");
                 return NIP_ERR_CLOSED;
             }
 
@@ -711,6 +713,15 @@ int tts_tcp_write(Socket *socket, const char *buf, size_t len) {
         result = buffer_size;
     }
 
+    if (write_out_enable) {
+        int send_result = tts_tcp_send(socket);
+        if (send_result != NIP_OK) {
+            NIP_LOGE("tcp_send error: %s", nip_error(send_result));
+            return send_result;
+        }
+        write_out_enable = false;
+    }
+
     return result;
 }
 
@@ -774,6 +785,9 @@ int tts_tcp_send(Socket *socket) {
             // update tcp seq
             tcp.header->seq = seq;
             tcp.header->ack = socket->last_client_seq;
+            if (packet_data_len < packet_data_cap) {
+                tcp.header->PSH = 1;
+            }
 
             tcp_checksum(&ip, &tcp);
 
