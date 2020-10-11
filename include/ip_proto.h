@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include <netinet/in.h>
 
+#include "nip_proto.h"
+
 // https://www.eit.lth.se/ppplab/IPHeader.htm
 typedef struct {
     unsigned char header_len : 4;
@@ -50,6 +52,11 @@ typedef struct {
 
 typedef struct {
     IP_PROTO_HEADER *header;
+    union {
+        const char *data;
+        TCP_PROTO_HEADER *tcp;
+        UDP_PROTO_HEADER *udp;
+    } proto_header;
     char *data;
 } IP_PROTO;
 
@@ -58,5 +65,7 @@ typedef struct {
  * @param ip
  */
 void ip_init_from_empty_data(IP_PROTO *ip);
+
+void ip_proto_init(IP_PROTO *ip, const char *data);
 
 #endif //NETWORK_IP_PROTO_H

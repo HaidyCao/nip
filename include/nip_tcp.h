@@ -2,30 +2,11 @@
 // Created by Haidy on 2020/6/16.
 //
 
-#ifndef NETWORK_TCP_H
-#define NETWORK_TCP_H
+#ifndef NETWORK_NIP_TCP_H
+#define NETWORK_NIP_TCP_H
 
 #include <stdint.h>
 #include "ip_proto.h"
-
-typedef struct {
-    uint16_t src_port;
-    uint16_t dest_port;
-    uint32_t seq;
-    uint32_t ack;
-    unsigned char rsv_1: 4;
-    unsigned short header_len: 4;
-    unsigned short FIN: 1;
-    unsigned short SYN: 1;
-    unsigned short RST: 1;
-    unsigned short PSH: 1;
-    unsigned short ACK: 1;
-    unsigned short URG: 1;
-    unsigned short rsv_2: 2;
-    unsigned int window_size:16;
-    uint16_t checksum;
-    uint16_t urgent_pointer;
-} TCP_PROTO_HEADER;
 
 #define TCP_HEADER_DEFAULT_LEN 20
 
@@ -57,4 +38,4 @@ void tcp_add_sack_option(TCP_PROTO *tcp);
 
 void tcp_add_window_scale_option(TCP_PROTO *tcp, uint8_t shift);
 
-#endif //NETWORK_TCP_H
+#endif //NETWORK_NIP_TCP_H

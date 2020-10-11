@@ -7,7 +7,7 @@
 
 #include "utils.h"
 #include "tcp_window.h"
-#include "tcp.h"
+#include "nip_tcp.h"
 #include "tun_to_socket.h"
 
 size_t nip_out_buffer_to_window(Socket *socket, size_t max) {

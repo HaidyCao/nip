@@ -25,3 +25,9 @@ void ip_init_from_empty_data(IP_PROTO *ip) {
     ip->header->src = 0;
     ip->header->dest = 0;
 }
+
+void ip_proto_init(IP_PROTO *ip, const char *data) {
+    ip->header = (IP_PROTO_HEADER *) data;
+    ip->proto_header.data = data + IP_HEADER_LEN(ip->header);
+    ip->data = (char *) data;
+}

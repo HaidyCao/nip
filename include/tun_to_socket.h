@@ -6,7 +6,7 @@
 #define NETWORK_TUN_TO_SOCKET_H
 
 #include "ip_proto.h"
-#include "tcp.h"
+#include "nip_tcp.h"
 #include "socks/lib/c_sparse_array.h"
 #include "socks/lib/c_linked_list.h"
 #include "tcp_window.h"

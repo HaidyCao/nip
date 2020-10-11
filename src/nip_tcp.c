@@ -7,7 +7,7 @@
 #include <string.h>
 #include <strings.h>
 
-#include "tcp.h"
+#include "nip_tcp.h"
 #include "config.h"
 #include "log.h"
 #include "tcp_status.h"

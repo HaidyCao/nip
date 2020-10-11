@@ -2,6 +2,7 @@
 // Created by Haidy on 2020/6/18.
 //
 
+#include "nip_udp.h"
 #include "checksum.h"
 
 #define IP_HEADER_SRC_IP_OFFSET 12
@@ -94,4 +95,27 @@ bool tcp_checksum(IP_PROTO *ip, TCP_PROTO *tcp) {
     short new_sum = checksum(sum, ip->data, IP_HEADER_LEN(ip->header), ip_data_len);
     tcp->header->checksum = htons(new_sum);
     return old_sum == tcp->header->checksum;
+}
+
+bool udp_checksum(IP_PROTO *ip) {
+    if (ip == NULL) {
+        return false;
+    }
+
+    ip_checksum(ip);
+    int ip_data_len = IP_DATA_LEN(ip->header);
+    if (ip_data_len <= 0) {
+        return false;
+    }
+
+    long sum = get_sum(ip->data, IP_HEADER_SRC_IP_OFFSET, 8);
+    sum += ip->header->protocol & (uint8_t) 0xFF;
+    sum += ip_data_len;
+
+    UDP_PROTO_HEADER *udp = ip->proto_header.udp;
+    unsigned short old_sum = udp->udp_checksum;
+    udp->udp_checksum = 0;
+    short new_sum = checksum(sum, ip->data, IP_HEADER_LEN(ip->header), ip_data_len);
+    udp->udp_checksum = htons(new_sum);
+    return old_sum == udp->udp_checksum;
 }

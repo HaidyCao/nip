@@ -17,7 +17,7 @@ add_library( # Sets the name of the library.
         # Sets the library as a shared library.
         STATIC
 
-        src/tcp.c
+        src/nip_tcp.c
         src/log.c
         src/ip_proto.c
         src/checksum.c
@@ -27,6 +27,8 @@ add_library( # Sets the name of the library.
         src/buf.c
         src/utils.c
         src/list.c
+
+        src/nip_udp.c
 )
 
 find_library( # Sets the name of the path variable.
